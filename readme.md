@@ -6,19 +6,24 @@
 docker-compose up
 ```
 
-You can try http://127.0.0.1/api/v1/product
+
 
 With below commands you will migrate the database and create dummy datas.
 
 ```bash
-sudo docker-compose exec appOrder php ./bin/console --env=test make:migration
-sudo docker-compose exec appOrder php ./bin/console --env=test doctrine:migrations:migrate
-sudo docker-compose exec appOrder php ./bin/console --env=test doctrine:fixtures:load
+docker-compose exec appOrder composer install
+```
+
+```bash
+sudo docker-compose exec appOrder php ./bin/console  make:migration
+sudo docker-compose exec appOrder php ./bin/console  doctrine:migrations:migrate
+sudo docker-compose exec appOrder php ./bin/console  doctrine:fixtures:load
 ```
 
 These commadns are for the unit test database.
 
 ```bash
+docker-compose exec appOrder php ./bin/console --env=test doctrine:database:create
 sudo docker-compose exec appOrder php ./bin/console --env=test doctrine:migrations:migrate
 sudo docker-compose exec appOrder php ./bin/console --env=test doctrine:fixtures:load
 ```
@@ -71,15 +76,23 @@ Service will return this kind of response.
 }
 ```
 
-We are providing Docker environment for local development. You can install [docker](https://docs.docker.com/install/)
-& [docker-compose on](https://docs.docker.com/compose/install/) your machine and run `docker-compose up` on project's
-root directory.
+
+Now you can try http://127.0.0.1/api/v1/product
 
 # Logic
 
 Post and Put endpoints involves authentication. You must sign your payload to send your request. There is a written example in php below.
 
 User and Currency are created automatically with fixtures.
+
+You must send API-KEY value in header if you must be authorized.
+
+**Parameters**
+
+|          Name | Required                                                                                                                                                            |
+| -------------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     `Content-Type` | application/json                                                       |
+|     `apı-key` | 6f9b85-a74513-594c51-51e92d-0a63d4 
 
 
 # Api Endpoints

@@ -33,6 +33,7 @@ class AuthenticationService extends BaseApiController
 
         $payloadString =  $this->payload($request);
         $signature = hash_hmac('sha256',$payloadString,  $secretKey);
+
         if($signature !== $request->get('signature')) {
             return false;
         }

@@ -38,7 +38,6 @@ class CurrencyController extends BaseApiController
     public function index(): JsonResponse
     {
         if(!$this->cache->get('currencies')) {
-            dd(1);
             /**
              * @var Currency[]|Collection $currencies
              */

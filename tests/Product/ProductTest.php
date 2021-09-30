@@ -75,14 +75,14 @@ class ProductTest extends ApiTestCase
             "status"      => false,
             "title"       => "UpdatedTitle1",
             "description" => "UpdatedDescription1",
-            "price"       => 300,
+            "price"       => 200,
         ];
 
         $payloadString = http_build_query($payload);
         $signature = hash_hmac('sha256', $payloadString, $user->getSecretKey());
         $payload['signature'] = $signature;
 
-        $response = static::createClient()->request('PUT', 'http://127.0.0.1/api/v1/product/1',
+        $response = static::createClient()->request('PUT', 'http://127.0.0.1/api/v1/product/14',
             [
                 'headers' => [
                     'Content-Type' => 'application/json',
@@ -95,7 +95,7 @@ class ProductTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
         $responseData = json_decode($response->getContent(), true);
         $this->assertSame('success', $responseData['status']);
-        $this->assertSame('300', $responseData['data']['price']);
+        $this->assertSame('200', $responseData['data']['price']);
         $this->assertSame('UpdatedTitle1', $responseData['data']['title']);
         $this->assertSame(false, $responseData['data']['status']);
     }

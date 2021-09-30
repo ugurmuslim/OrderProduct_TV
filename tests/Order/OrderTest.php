@@ -3,7 +3,9 @@
 namespace App\Tests\Order;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use App\Entity\Product;
 use App\Entity\User;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
@@ -31,10 +33,21 @@ class OrderTest extends ApiTestCase
          */
         $user = $this->em->getRepository(User::class)->find(1);
 
-
         $payload = [
             'products' => [ 1, 2, 3 ]
         ];
+        /**
+         *
+         * @var Product[]|Collection $products
+         *
+         */
+        $products = $this->em->getRepository(Product::class)->findWhereIn($payload['products']);
+        $totalPrice = 0;
+
+        foreach ($products as $product) {
+            $totalPrice += $product->getPrice();
+        }
+
 
         $payloadString = http_build_query($payload);
         $signature = hash_hmac('sha256',$payloadString,  $user->getSecretKey());
@@ -54,7 +67,7 @@ class OrderTest extends ApiTestCase
         $this->assertSame(200, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertSame('success', $responseData['status']);
+        $this->assertSame((string)$totalPrice, $responseData['data']['totalPrice']);
         $this->assertSame(1, $responseData['data']['orderDetails'][0]['product']['id']);
-        $this->assertSame('202', $responseData['data']['totalPrice']);
     }
 }
