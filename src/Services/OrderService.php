@@ -15,8 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class OrderService extends BaseApiController
 {
-    private float $totalPrice = 0;
-
     public function productsLegit($productsArray, array $products): bool
     {
         return count($productsArray) == count($products);
@@ -34,8 +32,9 @@ class OrderService extends BaseApiController
 
         $orderHeader = $this->initiateOrderHeader($user);
 
+        $totalPrice = 0;
         foreach ($productsCollection as $product) {
-            $this->totalPrice += $product->getPrice();
+            $totalPrice += $product->getPrice();
             $orderDetail = new OrderDetail();
             $orderDetail->setPrice($product->getPrice());
             $orderDetail->setProduct($product);
@@ -43,7 +42,7 @@ class OrderService extends BaseApiController
             $entityManager->persist($orderDetail);
         }
 
-        $orderHeader->setTotalPrice($this->totalPrice);
+        $orderHeader->setTotalPrice($totalPrice);
         $entityManager->persist($orderHeader);
         $entityManager->flush();
         return $orderHeader;
