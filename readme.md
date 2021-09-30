@@ -90,7 +90,7 @@ User and Currency are created automatically with fixtures.
 
 You don't need to enter any parameters for getting product list
 
-`POST` [/api/v1/product/{$id}](#post-1billingstart-trialjson) <br/>
+`POST` [/api/v1/product/](#post-1billingstart-trialjson) <br/>
 `PUT` [/api/v1/product/{$id}](#post-1billingstart-trialjson) <br/>
 
 **Parameters**
