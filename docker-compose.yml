@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+  #PHP Service
+  appOrder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: appOrder
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: appOrder
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network-order
+
+    #Nginx Service
+  webserverOrder:
+    image: nginx:latest
+    container_name: webserverOrder
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network-order
+
+  mariadbOrder:
+    image: bitnami/mariadb:latest
+    container_name: mariadbOrder
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3311:3306"
+    environment:
+      MARIADB_DATABASE: orderDatabase
+      MARIADB_MASTER_ROOT_USER: orderuser
+      MARIADB_ROOT_PASSWORD: 12345678
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - /etc/docker/order/mariadb/my.cnf:/opt/bitnami/mariadb/conf/my_custom.cnf:ro
+    networks:
+      - app-network-order
+
+  redisOrder:
+    image: "redis:alpine"
+    hostname: redisOrder
+    container_name: redisOrder
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network-order
+
+  redis-commanderOrder:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redisOrder:6379
+      - HTTP_USER=root
+      - HTTP_PASSWORD=qwerty
+    ports:
+      - 8081:8081
+    depends_on:
+      - redisOrder
+    networks:
+      - app-network-order
+
+networks:
+  app-network-order:
+    driver: bridge
