@@ -2,6 +2,8 @@
 
 # How To Run
 
+You can run docker first. All the dependencies will be configured.
+
 ```bash
 docker-compose up
 ```
@@ -79,13 +81,17 @@ Service will return this kind of response.
 
 Now you can try http://127.0.0.1/api/v1/product
 
+You can also use reds commander from http://127.0.0.1:8081/
+
 # Logic
 
-Post and Put endpoints involves authentication. You must sign your payload to send your request. There is a written example in php below.
+- User and Currency are created automatically with fixtures. There are no post or put endpoints for them.
 
-User and Currency are created automatically with fixtures.
+- Post and Put endpoints involves authentication. You must sign your payload to send your request. There is a written example in php below.
 
-You must send API-KEY value in header if you must be authorized.
+
+
+- You must send API-KEY value in header if you must be authorized.
 
 **Parameters**
 
@@ -120,7 +126,7 @@ You don't need to enter any parameters for getting product list
 
 `GET` [/api/v1/currency](#post-1billingstart-trialjson) <br/>
 
-Ypu will get currency types.
+You will get currency types.
 
 ## ORDER
 
