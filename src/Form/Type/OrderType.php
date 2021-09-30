@@ -23,7 +23,7 @@ class OrderType extends AbstractType
     {
         $resolver->setDefaults([
             'allow_extra_fields' => true,
-            'data_class' => Product::class,
+            'data_class' => OrderHeader::class,
         ]);
     }
 

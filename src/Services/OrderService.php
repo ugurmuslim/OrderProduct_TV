@@ -15,20 +15,39 @@ use Symfony\Component\HttpFoundation\Request;
 
 class OrderService extends BaseApiController
 {
-    public function productsLegit($productsArray, array $products): bool
+    protected function productsLegit($productsArray, array $products): bool
     {
         return count($productsArray) == count($products);
     }
 
-    public function insertOrder(User $user, $productsCollection): OrderHeader
+    public function insertOrder(Request $request): OrderHeader|FailResponse
     {
-
         $entityManager = $this->getDoctrine()->getManager();
+
+        $products = $request->request->all('products');
+
+        if (!is_array($products)) {
+            return new FailResponse("Products must be array");
+        }
+
+        if(!count($products) > 0) {
+            return new FailResponse("You must enter products");
+        }
+
+        $productsCollection = $this->getDoctrine()->getRepository(Product::class)->findWhereIn($products);
+
+        if (!$this->productsLegit($productsCollection, $products)) {
+            return new FailResponse("There are invalid Product you entered");
+        }
 
         /**
          * @var User $user
          */
-        $user = $this->getDoctrine()->getRepository(User::class)->find(1);
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([ 'apiKey' => $request->headers->get('api-key') ]);
+
+        if(!$user) {
+            return new FailResponse("User is invalid");
+        }
 
         $orderHeader = $this->initiateOrderHeader($user);
 

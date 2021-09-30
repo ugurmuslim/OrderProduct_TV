@@ -108,6 +108,7 @@ You can also use reds commander from http://127.0.0.1:8081/
 
 You don't need to enter any parameters for getting product list
 
+
 `POST` [/api/v1/product/](#post-1billingstart-trialjson) <br/>
 `PUT` [/api/v1/product/{$id}](#post-1billingstart-trialjson) <br/>
 
@@ -131,7 +132,7 @@ You will get currency types.
 
 `GET` [/api/v1/order](#post-1billingstart-trialjson) <br/>
 
-Ypu will get orders. You can enter 2 parameteres to filter the datas.
+You will get orders. You can enter 2 parameteres to filter the datas.
 
 **Parameters**
 
@@ -160,7 +161,7 @@ Only products with the status true must be inserted otherwise api will return er
 |          Name | Required |  Type   | Description                                                                                                                                                           |
 | -------------:|:--------:|:-------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |     `products` | required | array  | Product id array.                                                                     |
-|     `signature` | required | string  | Sha1 calculated crypted data.
+|     `signature` | required | string  | Sha256 calculated crypted data.
 
 
 `GET` [/api/v1/order/{id}](#link) <br/>

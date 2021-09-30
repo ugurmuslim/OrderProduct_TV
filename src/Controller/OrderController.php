@@ -45,7 +45,7 @@ class OrderController extends BaseApiController implements AuthenticationControl
          */
         $orders = $this->getDoctrine()->getRepository(OrderHeader::class)->findWithDetails($request);
 
-        return $this->successResult($orders, ['order', 'order_detail', 'products','user'] );
+        return $this->successResult($orders, [ 'order', 'order_detail', 'products', 'user' ]);
 
     }
 
@@ -53,33 +53,20 @@ class OrderController extends BaseApiController implements AuthenticationControl
     ]
     public function store(Request $request): JsonResponse
     {
-        $products = $request->request->all('products');
+        $response = $this->orderService->insertOrder($request);
 
-        $productsCollection = $this->getDoctrine()->getRepository(Product::class)->findWhereIn($products);
-
-        if (!$this->orderService->productsLegit($productsCollection, $products)) {
-            return $this->failureResult("There are some invalid Products you entered");
-        }
-
-        /**
-         * @var User $user
-         */
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([ 'apiKey' => $request->headers->get('api-key') ]);
-
-        $response = $this->orderService->insertOrder($user, $productsCollection);
-
-        if($response instanceof FailResponse) {
+        if ($response instanceof FailResponse) {
             return $this->failureResult($response->message);
         }
 
-        return $this->successResult($response, ['order', 'order_detail', 'products','user']);
+        return $this->successResult($response, [ 'order', 'order_detail', 'products', 'user' ]);
     }
 
     #[Route( '/api/v1/order/{id}', requirements: [ 'id' => '\d+' ], methods: [ 'GET' ] )]
     public function show(int $id): JsonResponse
     {
         $order = $this->getDoctrine()->getRepository(OrderHeader::class)->find($id);
-        return $this->successResult($order, [ 'user', 'order', 'order_detail', 'products' ] );
+        return $this->successResult($order, [ 'user', 'order', 'order_detail', 'products' ]);
     }
 
 }
