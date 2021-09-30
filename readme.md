@@ -17,7 +17,6 @@ docker-compose exec appOrder composer install
 ```
 
 ```bash
-sudo docker-compose exec appOrder php ./bin/console  make:migration
 sudo docker-compose exec appOrder php ./bin/console  doctrine:migrations:migrate
 sudo docker-compose exec appOrder php ./bin/console  doctrine:fixtures:load
 ```
